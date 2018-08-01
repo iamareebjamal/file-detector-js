@@ -1,10 +1,8 @@
-import mimecheck, { BinaryType, FileResult } from './mimecheck';
-
-const uploads: FileResult[] = [];
+import { FileResult, getFileTypes } from './mimecheck';
 
 const fileSelector = document.getElementById('file-selector');
 
-const render = () => {
+const render = (uploads: FileResult[]) => {
     const container = document.getElementById('files')
 
     const uploadedFiles = uploads.map(file => {
@@ -17,7 +15,7 @@ Allowed: <span class="tag is-${file.isAllowed ? 'success' : 'danger'}">${file.is
 </div>`
     })
 
-    container.innerHTML = uploadedFiles.join('')
+    container.innerHTML = container.innerHTML + uploadedFiles.join('')
 }
 
 fileSelector.addEventListener('change', event => {
@@ -26,12 +24,11 @@ fileSelector.addEventListener('change', event => {
         console.time(element.name);
     }
     console.time('all');
-    mimecheck.getFileTypes(files, result => {
+    getFileTypes(files, result => {
         console.log(result);
         console.timeEnd(result.name);
-        uploads.push(result);
+        render([result])
     }, results => {
-        render();
         console.log(results);
         console.timeEnd('all');
     });
