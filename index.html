@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>File Reader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+        <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <a class="navbar-item" href="#">
+                        File Reader
+                    </a>
+                
+                    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+            </nav>
+    <div class="container" style="margin-top: 3rem">
+
+        <form action="#">
+                <div class="file">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="resume" id="file-selector" multiple>
+                        <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="material-icons">cloud_upload</i>
+                        </span>
+                        <span class="file-label">
+                            Choose a file…
+                        </span>
+                        </span>
+                    </label>
+                </div>
+        </form>
+
+        <div id="files"></div>
+    </div>
+    <script src="index.ts"></script>
+</body>
+</html>

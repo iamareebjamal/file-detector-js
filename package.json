@@ -1,0 +1,12 @@
+{
+  "name": "filereader",
+  "version": "1.0.0",
+  "description": "Detects file type through uploader",
+  "main": "index.js",
+  "author": "iamareebjamal",
+  "license": "Apache-2",
+  "private": false,
+  "devDependencies": {
+    "typescript": "^2.9.2"
+  }
+}
