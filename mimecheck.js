@@ -28,7 +28,23 @@ function getBinaryType(signature) {
     }
 }
 exports.getBinaryType = getBinaryType;
-function getFileType(file, callback) {
+function isFileResult(arg) {
+    return arg.binaryType !== undefined;
+}
+exports.allowedTypes = [BinaryType.GIF, BinaryType.PNG, BinaryType.JPEG];
+function isAllowedType(arg, types) {
+    if (types === void 0) { types = exports.allowedTypes; }
+    var type = isFileResult(arg) ? arg.binaryType : arg;
+    var allowed = false;
+    for (var _i = 0, types_1 = types; _i < types_1.length; _i++) {
+        var fileType = types_1[_i];
+        allowed = allowed || type == fileType;
+    }
+    return allowed;
+}
+exports.isAllowedType = isAllowedType;
+function getFileType(file, callback, fileTypes) {
+    if (fileTypes === void 0) { fileTypes = exports.allowedTypes; }
     var fileReader = new FileReader();
     fileReader.onloadend = function (evt) {
         if (evt.target.readyState === FileReader.DONE) {
@@ -38,10 +54,12 @@ function getFileType(file, callback) {
                 bytes_1.push(byte.toString(16));
             });
             var hex = bytes_1.join('').toUpperCase();
+            var binaryType = getBinaryType(hex);
             callback({
                 name: file.name,
                 type: file.type,
-                binaryType: getBinaryType(hex),
+                binaryType: binaryType,
+                isAllowed: isAllowedType(binaryType, fileTypes),
                 hex: hex
             });
         }
@@ -50,7 +68,8 @@ function getFileType(file, callback) {
     fileReader.readAsArrayBuffer(blob);
 }
 exports.getFileType = getFileType;
-function getFileTypes(files, next, success) {
+function getFileTypes(files, next, success, fileTypes) {
+    if (fileTypes === void 0) { fileTypes = exports.allowedTypes; }
     var results = [];
     for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
         var file = files_1[_i];
@@ -61,7 +80,7 @@ function getFileTypes(files, next, success) {
             if (success && results.length == files.length) {
                 success(results);
             }
-        });
+        }, fileTypes);
     }
 }
 exports.getFileTypes = getFileTypes;
@@ -69,5 +88,6 @@ exports["default"] = {
     BinaryType: BinaryType,
     getFileType: getFileType,
     getFileTypes: getFileTypes,
-    getBinaryType: getBinaryType
+    getBinaryType: getBinaryType,
+    isAllowedType: isAllowedType
 };

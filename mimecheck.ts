@@ -38,12 +38,18 @@ function isFileResult(arg: BinaryType | FileResult): arg is FileResult {
     return (<FileResult>arg).binaryType !== undefined;
 }
 
-export function isAllowedType(arg: BinaryType | FileResult) {
+export const allowedTypes = [BinaryType.GIF, BinaryType.PNG, BinaryType.JPEG];
+
+export function isAllowedType(arg: BinaryType | FileResult, types: BinaryType[] = allowedTypes) {
     const type = isFileResult(arg) ? arg.binaryType : <BinaryType>arg;
-    return type == BinaryType.JPEG || type == BinaryType.PNG || type == BinaryType.GIF;
+    let allowed = false;
+    for (let fileType of types) {
+        allowed = allowed || type == fileType;
+    }
+    return allowed;
 }
 
-export function getFileType(file: File, callback: (file: FileResult) => void) {
+export function getFileType(file: File, callback: (file: FileResult) => void, fileTypes: BinaryType[] = allowedTypes) {
     const fileReader = new FileReader();
 
     fileReader.onloadend = evt => {
@@ -60,7 +66,7 @@ export function getFileType(file: File, callback: (file: FileResult) => void) {
                 name: file.name,
                 type: file.type,
                 binaryType: binaryType,
-                isAllowed: isAllowedType(binaryType),
+                isAllowed: isAllowedType(binaryType, fileTypes),
                 hex: hex
             })
         }
@@ -71,9 +77,10 @@ export function getFileType(file: File, callback: (file: FileResult) => void) {
 }
 
 export function getFileTypes(
-    files: File[], 
+    files: File[],
     next?: (file: FileResult) => void, 
-    success?: (file: FileResult[]) => void
+    success?: (file: FileResult[]) => void,
+    fileTypes: BinaryType[] = allowedTypes,
 ) {
     const results = []
     for (let file of files) {
@@ -83,7 +90,7 @@ export function getFileTypes(
             if (success && results.length == files.length) {
                 success(results);
             }
-        })
+        }, fileTypes)
     }
 }
 
